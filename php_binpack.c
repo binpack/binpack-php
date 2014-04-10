@@ -320,7 +320,7 @@ static bool binpack_make_list(bin_unpacker_t *uk, zval *val TSRMLS_DC)
 		}
 		if (type == -1)
 		{
-			zend_error(E_WARNING, "unexpect type when decode value for list, type: 0x%02x", type);
+			zend_error(E_WARNING, "unexpect type when decode value for list, type: 0x%02x line: %d", type, __LINE__);
 			zval_dtor(val);
 
 			return false;

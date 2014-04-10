@@ -6,5 +6,5 @@ function exe_cmd()
 exe_cmd "make clean"
 exe_cmd "make"
 exe_cmd "sudo cp modules/binpack.so /usr/local/php/extensions"
-exe_cmd "php test_binpack.php"
+exe_cmd "php test-dev-test.php"
 

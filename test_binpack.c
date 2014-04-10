@@ -30,7 +30,6 @@ static void test_pack_string()
 
     char *p;
     size_t len = 0;
-    //TODO
     bin_unpack_lstring(&uk, &p, &len);
     printf("%s\n", ptn);
     printf("%s\n", p);

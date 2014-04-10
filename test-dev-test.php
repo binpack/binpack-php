@@ -67,10 +67,13 @@ $data['user'] = array('name' => 'srain', 'gender' => 1);
 
 // $data = $src_data;
 $data = (PHP_INT_MAX * -1) - 1;
-echo $data;
+
+$data = null;
+echo 'origin: ';
+var_dump($data);
+echo "hex:\n";
 $str = bin_encode($data);
 hex_dump($str);
 $data1 = bin_decode($str);
 
-var_export($data1);
-echo "\n", PHP_INT_MAX, "\n";
+echo 'after decode: ' , var_dump($data1);

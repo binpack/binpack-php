@@ -10,11 +10,11 @@ $data[-1] = -2;
 $data[] = -1;
 $data[] = 0;
 $data[] = 1;
-// $data[] = PHP_INT_MAX;
-// $data[] = PHP_INT_MAX + 1;
-// $data[] = -PHP_INT_MAX;
-// $data[] = (PHP_INT_MAX * -1) - 1;
-// $data[] = (PHP_INT_MAX * -1) - 2;
+$data[] = PHP_INT_MAX;
+$data[] = PHP_INT_MAX + 1;
+$data[] = -PHP_INT_MAX;
+$data[] = (PHP_INT_MAX * -1) - 1;
+$data[] = (PHP_INT_MAX * -1) - 2;
 
 $data[] = true;
 $data[] = false;

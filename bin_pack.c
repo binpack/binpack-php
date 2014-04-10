@@ -486,21 +486,3 @@ int bin_unpack_null(bin_unpacker_t *packer)
 {
     return _unpack_verify_simple_tag(packer, BIN_TYPE_NULL);
 }
-
-int bin_peek_type(bin_unpacker_t *packer)
-{
-    uintmax_t num;
-    int type;
-    size_t pos = packer->pos;
-
-    type = bin_unpack_type(packer, &num);
-
-    if (type == BIN_TYPE_INTEGER_NEGATIVE)
-        type = BIN_TYPE_INTEGER;
-
-    if (type == BIN_TYPE_BOOL_FALSE)
-        type == BIN_TYPE_BOOL;
-
-    packer->pos = pos;
-    return type;
-}

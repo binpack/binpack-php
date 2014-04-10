@@ -41,11 +41,11 @@ typedef enum {
 #define BIN_TAG_PACK_INTERGER               0x08        // 0000 0xxx
 #define BIN_TAG_PACK_NUM                    0x10        // 0000 xxxx
 
-#define bin_bool_byte(value)	((char)((value) ? BIN_TYPE_BOOL : BIN_TYPE_BOOL_FALSE))
-#define bin_null_byte()		((char)BIN_TYPE_NULL)
-#define bin_closure_byte()	((char)BIN_TYPE_CLOSURE)
-#define bin_list_byte()		((char)BIN_TYPE_LIST)
-#define bin_dict_byte()		((char)BIN_TYPE_DICT)
+#define bin_bool_byte(value)	((unsigned char)((value) ? BIN_TYPE_BOOL : BIN_TYPE_BOOL_FALSE))
+#define bin_null_byte()		((unsigned char)BIN_TYPE_NULL)
+#define bin_closure_byte()	((unsigned char)BIN_TYPE_CLOSURE)
+#define bin_list_byte()		((unsigned char)BIN_TYPE_LIST)
+#define bin_dict_byte()		((unsigned char)BIN_TYPE_DICT)
 
 #define bin_pack_bool(packer, value) do {       \
     char byte = bin_bool_byte(value);           \
@@ -53,7 +53,7 @@ typedef enum {
 }while(0)
 
 #define bin_pack_null(packer) do {              \
-    char byte = bin_list_byte();                \
+    char byte = bin_null_byte();                \
     (packer)->write((packer)->buf, (&byte), 1); \
 }while(0)
 
@@ -134,22 +134,8 @@ int bin_unpack_float_single(bin_unpacker_t *job, float *p_value);
 int bin_unpack_bool(bin_unpacker_t *job, bool *p_value);
 int bin_unpack_null(bin_unpacker_t *job);
 
-
 inline double bin_make_double(bin_unpacker_t *packer);
 inline float bin_make_float(bin_unpacker_t *packer);
-int bin_peek_type(bin_unpacker_t *job);
-
-
-#define bin_unpack_if_closure(JOB)					        \
-	(	((JOB)->pos < (JOB)->size && (JOB)->depth > 0 		\
-		&& (JOB)->buf[(JOB)->pos] == BIN_TYPE_CLOSURE)		\
-			? ((JOB)->pos++, (JOB)->depth--, true)		    \
-			: false						                    \
-	)
-
-bool (bin_unpack_if_closure)(bin_unpacker_t *job);
-
-
 #ifdef __cplusplus
 }
 #endif

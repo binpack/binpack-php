@@ -24,13 +24,16 @@ $data[] = -PHP_INT_MAX;
 $data[] = (PHP_INT_MAX * -1) - 1;
 $data[] = (PHP_INT_MAX * -1) - 2;
 
+$data[] = null;
 $data[] = true;
 $data[] = false;
 $data['num'] = 1111.23423;
 $data['user'] = array('name' => 'srain', 'gender' => 1);
+$data['arr'] = range(1, 100);
 
 $str = bin_encode($data);
 $data1 = bin_decode($str);
 
-var_export($data1); echo "\n";
+var_dump($data); echo "\n";
+var_dump($data1); echo "\n";
 var_export($data1 == $data);echo "\n";

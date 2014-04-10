@@ -1,6 +1,6 @@
 <?php
 if ($_SERVER['argc'] < 2) {
-    echo 'Usage: php ' . $_SERVER['argv'][0] . ' 1 | 2';
+    echo 'Usage: php ' , $_SERVER['argv'][0] , ' 1 | 2', "\n";
     exit;
 }
 
@@ -23,10 +23,13 @@ $data[] = -PHP_INT_MAX;
 $data[] = (PHP_INT_MAX * -1) - 1;
 $data[] = (PHP_INT_MAX * -1) - 2;
 
+$data[] = null;
 $data[] = true;
 $data[] = false;
 $data['num'] = 1111.23423;
 $data['user'] = array('name' => 'srain', 'gender' => 1);
+foreach (range(1, 100) as $i)
+    $data['arr'][] = rand(1, PHP_INT_MAX);
 
 $total_t = 100001;
 $type = $_SERVER['argv'][1];
