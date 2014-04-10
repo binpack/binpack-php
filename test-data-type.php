@@ -12,24 +12,7 @@ foreach($functions as $func) {
 }
 echo "$br\n";
 
-$data = array();
-
-$data[-1] = -2;
-$data[] = -1;
-$data[] = 0;
-$data[] = 1;
-$data[] = PHP_INT_MAX;
-$data[] = PHP_INT_MAX + 1;
-$data[] = -PHP_INT_MAX;
-$data[] = (PHP_INT_MAX * -1) - 1;
-$data[] = (PHP_INT_MAX * -1) - 2;
-
-$data[] = null;
-$data[] = true;
-$data[] = false;
-$data['num'] = 1111.23423;
-$data['user'] = array('name' => 'srain', 'gender' => 1);
-$data['arr'] = range(1, 100);
+$data = require 'test-get-test-data.php';
 
 $str = bin_encode($data);
 $data1 = bin_decode($str);

@@ -11,25 +11,8 @@ if(!extension_loaded('binpack')) {
 if(!extension_loaded('msgpack')) {
     dl('msgpack.' . PHP_SHLIB_SUFFIX);
 }
-$data = array();
 
-$data[-1] = -2;
-$data[] = -1;
-$data[] = 0;
-$data[] = 1;
-$data[] = PHP_INT_MAX;
-$data[] = PHP_INT_MAX + 1;
-$data[] = -PHP_INT_MAX;
-$data[] = (PHP_INT_MAX * -1) - 1;
-$data[] = (PHP_INT_MAX * -1) - 2;
-
-$data[] = null;
-$data[] = true;
-$data[] = false;
-$data['num'] = 1111.23423;
-$data['user'] = array('name' => 'srain', 'gender' => 1);
-foreach (range(1, 100) as $i)
-    $data['arr'][] = rand(1, PHP_INT_MAX);
+$data = require 'test-get-test-data.php';
 
 $total_t = 100001;
 $type = $_SERVER['argv'][1];
