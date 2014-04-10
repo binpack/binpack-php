@@ -1,5 +1,3 @@
-/* $Id: bin_pack.h huqiu Exp $ */
-
 #ifndef BIN_PACK_H_
 #define BIN_PACK_H_ 1
 
@@ -12,9 +10,6 @@
 extern "C" {
 #endif
 
-/*
- *
- */
 typedef enum {
 	BIN_TYPE_CLOSURE	            = 0x01,	
 	BIN_TYPE_LIST   	            = 0x02,
@@ -22,22 +17,23 @@ typedef enum {
 	BIN_TYPE_BOOL   	            = 0x04,     /* 0000 0100 T */
     BIN_TYPE_BOOL_FALSE             = 0x05,     /* 0000 0101 F */
 
-	BIN_TYPE_REAL_DOUBLE            = 0x06,     /* 0010 0110   */
-    BIN_TYPE_REAL_FLOAT             = 0x07,     /* 0000 0111   */
+	BIN_TYPE_FLOAT_DOUBLE           = 0x06,     /* 0010 0110   */
+    BIN_TYPE_FLOAT_SINGLE           = 0x07,     /* 0000 0111   */
 
 	BIN_TYPE_NULL   	            = 0x0f,
 
-	BIN_TYPE_BLOB   	            = 0x10,		/* 0001 xxxx + */
-	BIN_TYPE_STRING   	            = 0x20,		/* 0010 xxxx + */
+	BIN_TYPE_BLOB   	            = 0x10,		/* 0001 xxxx   */
+	BIN_TYPE_STRING   	            = 0x20,		/* 0010 xxxx   */
 
 	BIN_TYPE_INTEGER 	            = 0x40,		/* 010x xxxx + */
 	BIN_TYPE_INTEGER_NEGATIVE    	= 0x60,     /* 011x xxxx - */
 } bin_type_t;
 
-#define BIN_INTEGER_TYPE_BYTE               0x01 << 3
-#define BIN_INTEGER_TYPE_SHORT              0x02 << 3
-#define BIN_INTEGER_TYPE_INT                0x03 << 3
-#define BIN_INTEGER_TYPE_LONG               0x04 << 3
+#define BIN_INTEGER_TYPE_64                 0x00 << 3   // default implementation
+#define BIN_INTEGER_TYPE_8                  0x01 << 3
+#define BIN_INTEGER_TYPE_16                 0x02 << 3
+#define BIN_INTEGER_TYPE_32                 0x03 << 3
+
 #define BIN_INTEGER_SUBTYPE_MASK            0x03 << 3
 
 #define BIN_INTEGER_NEGATVIE_MASK           0x20        // 001x xxxx, 2 bits for type, 3 bits for packing
@@ -124,8 +120,8 @@ int bin_pack_uinteger(bin_packer_t *packer, uintmax_t value);
 int bin_pack_lstring(bin_packer_t *packer, const char *str, size_t len);
 int bin_pack_string(bin_packer_t *packer, const char *str);
 int bin_pack_blob(bin_packer_t *packer, const void *data, size_t len);
-int bin_pack_real_double(bin_packer_t *packer, double value);
-int bin_pack_real_float(bin_packer_t *packer, float value);
+int bin_pack_float_double(bin_packer_t *packer, double value);
+int bin_pack_float_single(bin_packer_t *packer, float value);
 
 
 int bin_unpack_type(bin_unpacker_t *job, uintmax_t *p_value);
@@ -133,8 +129,8 @@ int bin_unpack_integer(bin_unpacker_t *job, intmax_t *p_value);
 int bin_unpack_uinteger(bin_unpacker_t *job, uintmax_t *p_value);
 int bin_unpack_lstring(bin_unpacker_t *job, char **p_str, size_t *p_len);
 int bin_unpack_blob(bin_unpacker_t *job, void **p_data, size_t *p_len);
-int bin_unpack_real_double(bin_unpacker_t *job, double *p_value);
-int bin_unpack_real_float(bin_unpacker_t *job, float *p_value);
+int bin_unpack_float_double(bin_unpacker_t *job, double *p_value);
+int bin_unpack_float_single(bin_unpacker_t *job, float *p_value);
 int bin_unpack_bool(bin_unpacker_t *job, bool *p_value);
 int bin_unpack_null(bin_unpacker_t *job);
 

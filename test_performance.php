@@ -12,16 +12,26 @@ if(!extension_loaded('msgpack')) {
     dl('msgpack.' . PHP_SHLIB_SUFFIX);
 }
 $data = array();
-$data[] = -1111;
-$data['user'] = array('name' => 'srain', 'gender' => 1);
-$data['num'] = 1111.23423;
 
-$str = file_get_contents('src.json');
-$data = json_decode($str, true);
+$data[-1] = -2;
+$data[] = -1;
+$data[] = 0;
+$data[] = 1;
+$data[] = PHP_INT_MAX;
+$data[] = PHP_INT_MAX + 1;
+$data[] = -PHP_INT_MAX;
+$data[] = (PHP_INT_MAX * -1) - 1;
+$data[] = (PHP_INT_MAX * -1) - 2;
+
+$data[] = true;
+$data[] = false;
+$data['num'] = 1111.23423;
+$data['user'] = array('name' => 'srain', 'gender' => 1);
+
+$total_t = 100001;
+$type = $_SERVER['argv'][1];
 
 $t1 = microtime(true);
-$total_t = 10000;
-$type = $_SERVER['argv'][1];
 if ($type == 1)
 {
     for ($i = 0; $i < $total_t; $i++)
@@ -34,7 +44,7 @@ if ($type == 1)
         $data1 = bin_decode($data1['str']);
     }
     $t2 = microtime(true);
-    echo "bin\t",  $t2 - $t1, "\n";
+    echo "binpack\t",  $t2 - $t1, "\t" . 'data length: ' . strlen($str) . "\n";
 }
 else if ($type == 2)
 {
@@ -48,5 +58,5 @@ else if ($type == 2)
         $data1 = msgpack_unserialize($data1['str']);
     }
     $t2 = microtime(true);
-    echo "msgpack\t",  $t2 - $t1, "\n";
+    echo "msgpack\t",  $t2 - $t1, "\t" . 'data length: ' . strlen($str) . "\n";
 }

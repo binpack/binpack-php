@@ -20,12 +20,6 @@ static const char rcsid[] = "$Id: bin_pack.c, huqiu Exp $";
 #define SSIZE_MAX	(SIZE_MAX/2)
 #endif
 
-enum {
-    REAL_ZERO	=  0,		/* 0 */
-    REAL_INF	=  1,		/* infinite */
-    REAL_NAN	=  2,		/* NaN */
-};
-
 static const char *_tpnames[] = {
     "UNKNOWN",	/*  0 */
     "CLOSURE",	/*  1 */
@@ -119,27 +113,27 @@ inline size_t bin_blobhead_buffer(char *buf, size_t bloblen)
     return _pack_uint_len(buf, BIN_TYPE_BLOB, bloblen);
 }
 
-size_t bin_real_buffer_double(char *buf, double value)
+size_t bin_float_double_buffer(char *buf, double value)
 {
-    union { double v; uint64_t c; } real;
-	real.v = value;
+    union { double v; uint64_t c; } f;
+	f.v = value;
     
-    uint64_t x = _binpack_be64(real.c);
+    uint64_t x = _binpack_be64(f.c);
 
-    *buf++ = BIN_TYPE_REAL_DOUBLE;
+    *buf++ = BIN_TYPE_FLOAT_DOUBLE;
     memcpy(buf, &x, 8);
 
     return 9;
 }
 
-size_t bin_real_float_buffer(char *buf, float value)
+size_t bin_float_single_buffer(char *buf, float value)
 {
-    *buf++ = BIN_TYPE_REAL_FLOAT;
+    *buf++ = BIN_TYPE_FLOAT_SINGLE;
 
-    union { float v; uint32_t c; } real;
-	real.v = value;
+    union { float v; uint32_t c; } f;
+	f.v = value;
     
-    uint32_t x = _binpack_be32(real.c);
+    uint32_t x = _binpack_be32(f.c);
     memcpy(buf, &x, 4);
 
     return 5;
@@ -188,7 +182,7 @@ int bin_unpack_type(bin_unpacker_t *packer, uintmax_t *p_num)
         else
         {
             // pack:    0000 1xxx
-            // type:    0xxx x000, integer, bit 5 & 6 derective sub-type information.
+            // type:    0xxx x000, integer, bit 5 & 6 directive sub-type information.
             if (x >= BIN_TYPE_INTEGER)
             {
                 type = x & 0x60;
@@ -329,10 +323,10 @@ int bin_pack_blob(bin_packer_t *packer, const void *data, size_t len)
     return 0;
 }
 
-int bin_pack_real_double(bin_packer_t *packer, double value)
+int bin_pack_float_double(bin_packer_t *packer, double value)
 {
     char tmpbuf[9];
-    size_t n = bin_real_buffer_double(tmpbuf, value);
+    size_t n = bin_float_double_buffer(tmpbuf, value);
     if (packer->write(packer->buf, tmpbuf, n) != n)
     {
         packer->error = __LINE__;
@@ -341,10 +335,10 @@ int bin_pack_real_double(bin_packer_t *packer, double value)
     return 0;
 }
 
-int bin_pack_real_float(bin_packer_t *packer, float value)
+int bin_pack_float_single(bin_packer_t *packer, float value)
 {
     char tmpbuf[5];
-    size_t n = bin_real_float_buffer(tmpbuf, value);
+    size_t n = bin_float_single_buffer(tmpbuf, value);
     if (packer->write(packer->buf, tmpbuf, n) != n)
     {
         packer->error = __LINE__;
@@ -411,28 +405,28 @@ int bin_unpack_blob(bin_unpacker_t *packer, void **p_data, size_t *p_len)
 
 inline double bin_make_double(bin_unpacker_t *packer)
 {
-    union { uint64_t c; double v;} real;
+    union { uint64_t c; double v;} f;
 
     char *p = packer->buf + packer->pos;
-    real.c = _binpack_be64(*(uint64_t *)p);
+    f.c = _binpack_be64(*(uint64_t *)p);
     packer->pos += 8;
-    return real.v;
+    return f.v;
 }
 
 inline float bin_make_float(bin_unpacker_t *packer)
 {
-    union { uint32_t c; float v;} real;
+    union { uint32_t c; float v;} f;
     char *p = packer->buf + packer->pos;
 
-    real.c = _binpack_be32(*(uint32_t *)p);
+    f.c = _binpack_be32(*(uint32_t *)p);
 
-    return real.v;
+    return f.v;
 }
 
-int bin_unpack_real_double(bin_unpacker_t *packer, double *p_value)
+int bin_unpack_float_double(bin_unpacker_t *packer, double *p_value)
 {
     uintmax_t num;
-    if (BIN_TYPE_REAL_DOUBLE != bin_unpack_type(packer, &num))
+    if (BIN_TYPE_FLOAT_DOUBLE != bin_unpack_type(packer, &num))
     {
         packer->error = __LINE__;
         return -1;
@@ -442,10 +436,10 @@ int bin_unpack_real_double(bin_unpacker_t *packer, double *p_value)
     return 0;
 }
 
-int bin_unpack_real_float(bin_unpacker_t *packer, float *p_value)
+int bin_unpack_float_single(bin_unpacker_t *packer, float *p_value)
 {
     uintmax_t num;
-    if (BIN_TYPE_REAL_FLOAT != bin_unpack_type(packer, &num))
+    if (BIN_TYPE_FLOAT_SINGLE != bin_unpack_type(packer, &num))
     {
         packer->error = __LINE__;
         return -1;

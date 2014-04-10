@@ -424,7 +424,7 @@ static void binpack_do_encode(bin_packer_t *pk, zval *val)
 			break;
 		
 		case IS_DOUBLE:
-			bin_pack_real_double(pk, Z_DVAL_P(val));
+			bin_pack_float_double(pk, Z_DVAL_P(val));
 			break;
 
 		case IS_OBJECT:
@@ -432,10 +432,10 @@ static void binpack_do_encode(bin_packer_t *pk, zval *val)
 			 * as in php, there is no difference between string and blob,
 			 * we encode blob as string
 			 *
-			if (zend_get_class_entry(val TSRMLS_CC) == vbs_ce_BlobObject)
+			if (zend_get_class_entry(val TSRMLS_CC) == bin_ce_BlobObject)
 			{
 				blob_object *intern = (blob_object *)zend_object_store_get_object(val TSRMLS_CC);
-				vbs_pack_blob(pk, Z_STRVAL_P(intern->value), Z_STRLEN_P(intern->value));
+				bin_pack_blob(pk, Z_STRVAL_P(intern->value), Z_STRLEN_P(intern->value));
 				break;
 			}
 			*/
@@ -466,6 +466,7 @@ static int binpack_do_decode(bin_unpacker_t *uk, zval **val)
 		{
 			int sign = type & BIN_INTEGER_NEGATVIE_MASK;
 			// if (num <= LONG_MAX || (sign && num <= LONG_MAX + 1))
+			// more efficent
 			if (num <= LONG_MAX + sign)
 			{
 				if (sign)
@@ -510,17 +511,17 @@ static int binpack_do_decode(bin_unpacker_t *uk, zval **val)
 			ZVAL_BOOL(*val, type == BIN_TYPE_BOOL); 
 			type = BIN_TYPE_BOOL;
 		}
-		else if (type == BIN_TYPE_REAL_DOUBLE)
+		else if (type == BIN_TYPE_FLOAT_DOUBLE)
 		{
 			double value = bin_make_double(uk);
 			ZVAL_DOUBLE(*val, value);
 		}
-		else if (type == BIN_TYPE_REAL_FLOAT)
+		else if (type == BIN_TYPE_FLOAT_SINGLE)
 		{
 			double value = (double)bin_make_float(uk);
 			ZVAL_DOUBLE(*val, value);
 
-			type = BIN_TYPE_REAL_DOUBLE;
+			type = BIN_TYPE_FLOAT_DOUBLE;;
 		}
 		else if (type == BIN_TYPE_LIST)
 		{
@@ -544,7 +545,8 @@ static int binpack_do_decode(bin_unpacker_t *uk, zval **val)
 		}
 		else if (type == BIN_TYPE_CLOSURE)
 		{
-			// do nothing, will never hit here
+			// do nothing, will never hit here unless someone do somthing nasty
+			goto error;
 		}
 		else
 		{
