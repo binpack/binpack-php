@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-#ifdef XSLIB_RCSID
+#ifdef CUBE_LIB_RCSID
 static const char rcsid[] = "$Id: bin_pack.c, huqiu Exp $";
 #endif
 
@@ -44,7 +44,6 @@ static unsigned char _tpidx[BIN_TYPE_INTEGER + 1] = {
 
 const char *bin_type_name(bin_type_t type)
 {
-    // TODO unstable
     return (type >= 0 && type <= BIN_TYPE_INTEGER) ? _tpnames[_tpidx[type]] : _tpnames[0];
 }
 
@@ -64,7 +63,7 @@ static inline size_t _pack_intstr(char *buf, int type, uintmax_t num)
 static inline size_t _pack_uint_len(char *buf, int type, uintmax_t num)
 {
     char *p = buf;
-    // 0001 xxxx
+    /* 0001 xxxx */
     while (num >= BIN_TAG_PACK_NUM)
     {
         *p++ = 0x80 | num;
@@ -150,7 +149,7 @@ int bin_unpack_type(bin_unpacker_t *packer, uintmax_t *p_num)
         int x = *(unsigned char *)p++;
         int shift = 0;
 
-        // 1xxx xxxx
+        /* 1xxx xxxx */
         if (x >= 0x80)
         {
             int left = sizeof(uintmax_t) * 8 ;
@@ -174,22 +173,24 @@ int bin_unpack_type(bin_unpacker_t *packer, uintmax_t *p_num)
             }
         }
 
-        // 0001 xxxx
+        /* 0001 xxxx */
         if (x < 0x10)
         {
             type = x;
         }
         else
         {
-            // pack:    0000 1xxx
-            // type:    0xxx x000, integer, bit 5 & 6 directive sub-type information.
+            /* pack:    0000 1xxx
+             * type:    0xxx x000, integer, bit 5 & 6 directive sub-type information.
+             */
             if (x >= BIN_TYPE_INTEGER)
             {
                 type = x & 0x60;
                 num |= (uintmax_t)(x & 0x07) << shift;
             }
-            // pack:    0001 xxxx, one more bit to pack data
-            // type:    0xxx 0000, double / string / blob
+            /* pack:    0001 xxxx, one more bit to pack data
+             * type:    0xxx 0000, double / string / blob
+             */
             else
             {
                 type = x & 0x70;
@@ -458,7 +459,7 @@ int bin_unpack_bool(bin_unpacker_t *packer, bool *p_value)
         return -1;
     }
 
-    // xxxx x0x0, any x is not 0
+    /* xxxx x0x0, any x is not 0 */
     if ((packer->buf[packer->pos] & ~0x05) != 0)
     {
         packer->error = __LINE__;

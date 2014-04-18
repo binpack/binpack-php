@@ -162,7 +162,7 @@ PHP_MINFO_FUNCTION(binpack)
 /* }}} */
 
 /*
- * some function declare here
+ * Declare binpack_do_encode / binpack_do_decode
  */
 static void binpack_do_encode(bin_packer_t *pk, zval *val);
 static int binpack_do_decode(bin_unpacker_t *uk, zval **val);
@@ -379,7 +379,8 @@ static bool binpack_make_dict(bin_unpacker_t *uk, zval *dict TSRMLS_DC)
 			}
 
 			int sign = key_type & BIN_INTEGER_NEGATVIE_MASK;
-			// if (num <= LONG_MAX || (sign && num <= LONG_MAX + 1))
+			/* if (num <= LONG_MAX || (sign && num <= LONG_MAX + 1)) */
+			/* The real logic is in the code above, we do it in a more efficient way */
 			if (num <= LONG_MAX + sign)
 			{
 				if (sign)
@@ -407,6 +408,9 @@ static bool binpack_make_dict(bin_unpacker_t *uk, zval *dict TSRMLS_DC)
 static void binpack_do_encode(bin_packer_t *pk, zval *val)
 {
 	switch(Z_TYPE_P(val)) {
+		/* as in php, there is no difference between string and blob,
+		 * we encode blob as string
+		 */
 		case IS_STRING:
 			bin_pack_lstring(pk, Z_STRVAL_P(val), Z_STRLEN_P(val));
 			break;
@@ -428,18 +432,8 @@ static void binpack_do_encode(bin_packer_t *pk, zval *val)
 			break;
 
 		case IS_OBJECT:
-			/* TODO: pack blob
-			 * as in php, there is no difference between string and blob,
-			 * we encode blob as string
-			 *
-			if (zend_get_class_entry(val TSRMLS_CC) == bin_ce_BlobObject)
-			{
-				blob_object *intern = (blob_object *)zend_object_store_get_object(val TSRMLS_CC);
-				bin_pack_blob(pk, Z_STRVAL_P(intern->value), Z_STRLEN_P(intern->value));
-				break;
-			}
-			*/
 			/* fall through */
+
 		case IS_ARRAY:
 			binpack_encode_array(pk, val);
 			break;
@@ -465,8 +459,8 @@ static int binpack_do_decode(bin_unpacker_t *uk, zval **val)
 		if (type == BIN_TYPE_INTEGER || type == BIN_TYPE_INTEGER_NEGATIVE)
 		{
 			int sign = type & BIN_INTEGER_NEGATVIE_MASK;
-			// if (num <= LONG_MAX || (sign && num <= LONG_MAX + 1))
-			// more efficent
+			/* if (num <= LONG_MAX || (sign && num <= LONG_MAX + 1)) */
+			/* more efficient */
 			if (num <= LONG_MAX + sign)
 			{
 				if (sign)
@@ -482,7 +476,7 @@ static int binpack_do_decode(bin_unpacker_t *uk, zval **val)
 			}
 			else
 			{
-				// reach long limit, convert to string
+				/* reach long limit, convert to string */
 				char tmp[40], *s;
 				char *end = tmp + sizeof(tmp);
 				s = _itoa(end, num);
@@ -545,7 +539,7 @@ static int binpack_do_decode(bin_unpacker_t *uk, zval **val)
 		}
 		else if (type == BIN_TYPE_CLOSURE)
 		{
-			// do nothing, will never hit here unless someone do somthing nasty
+			/* do nothing, will never hit here unless someone do somthing nasty */
 			goto error;
 		}
 		else
