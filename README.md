@@ -10,7 +10,7 @@ The php implementation for binpack.
 phpize
 ./configure
 make & make install
-``
+```
 
 ### usage
 
