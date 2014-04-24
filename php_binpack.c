@@ -162,10 +162,10 @@ PHP_MINFO_FUNCTION(binpack)
 /* }}} */
 
 /*
- * Declare binpack_do_encode / binpack_do_decode
+ * some function declare here
  */
-static void binpack_do_encode(bin_packer_t *pk, zval *val);
-static int binpack_do_decode(bin_unpacker_t *uk, zval **val);
+static void binpack_do_encode(bin_packer_t *pk, zval *val TSRMLS_DC);
+static int binpack_do_decode(bin_unpacker_t *uk, zval **val TSRMLS_DC);
 
 #define SPECIAL(p, val, Base, digits)							\
 		case Base:												\
@@ -193,7 +193,7 @@ static inline char *_itoa(char *bufend, uintmax_t value)
 		return bufend;
 }
 
-inline static int binpack_check_ht_is_map(zval *array) 
+inline static int binpack_check_ht_is_map(zval *array TSRMLS_DC) 
 {
     int count = zend_hash_num_elements(Z_ARRVAL_P(array));
 
@@ -223,7 +223,7 @@ static ssize_t binpack_write_buffer(void *buf, const void *data, size_t len)
 	return len;
 }
 
-static void binpack_encode_array(bin_packer_t *pk, zval *arr)
+static void binpack_encode_array(bin_packer_t *pk, zval *arr TSRMLS_DC)
 {
 	HashTable *ht = Z_ARRVAL_P(arr);
 	bool is_dict = false;
@@ -296,7 +296,7 @@ static void binpack_encode_array(bin_packer_t *pk, zval *arr)
 				}
 			}
 
-			binpack_do_encode(pk, *data);
+			binpack_do_encode(pk, *data TSRMLS_CC);
 
 			if (tmp_ht)
 				tmp_ht->nApplyCount--;
@@ -313,7 +313,7 @@ static bool binpack_make_list(bin_unpacker_t *uk, zval *val TSRMLS_DC)
 	while (true)
 	{
 		zval *item;
-		int type = binpack_do_decode(uk, &item);
+		int type = binpack_do_decode(uk, &item TSRMLS_CC);
 		if (type == BIN_TYPE_CLOSURE)
 		{
 			break;
@@ -354,7 +354,7 @@ static bool binpack_make_dict(bin_unpacker_t *uk, zval *dict TSRMLS_DC)
 			uk->pos += num;
 
 			zval *dict_val;
-			int val_type = binpack_do_decode(uk, &dict_val);
+			int val_type = binpack_do_decode(uk, &dict_val TSRMLS_CC);
 			if (val_type == BIN_TYPE_CLOSURE || val_type == -1)
 			{
 				zval_dtor(dict);
@@ -370,7 +370,7 @@ static bool binpack_make_dict(bin_unpacker_t *uk, zval *dict TSRMLS_DC)
 		else
 		{
 			zval *dict_val;
-			int val_type = binpack_do_decode(uk, &dict_val);
+			int val_type = binpack_do_decode(uk, &dict_val TSRMLS_CC);
 			if (val_type == BIN_TYPE_CLOSURE || val_type == -1)
 			{
 				zval_dtor(dict);
@@ -379,8 +379,7 @@ static bool binpack_make_dict(bin_unpacker_t *uk, zval *dict TSRMLS_DC)
 			}
 
 			int sign = key_type & BIN_INTEGER_NEGATVIE_MASK;
-			/* if (num <= LONG_MAX || (sign && num <= LONG_MAX + 1)) */
-			/* The real logic is in the code above, we do it in a more efficient way */
+			// if (num <= LONG_MAX || (sign && num <= LONG_MAX + 1))
 			if (num <= LONG_MAX + sign)
 			{
 				if (sign)
@@ -405,12 +404,9 @@ static bool binpack_make_dict(bin_unpacker_t *uk, zval *dict TSRMLS_DC)
 	return true;
 }
 
-static void binpack_do_encode(bin_packer_t *pk, zval *val)
+static void binpack_do_encode(bin_packer_t *pk, zval *val TSRMLS_DC)
 {
 	switch(Z_TYPE_P(val)) {
-		/* as in php, there is no difference between string and blob,
-		 * we encode blob as string
-		 */
 		case IS_STRING:
 			bin_pack_lstring(pk, Z_STRVAL_P(val), Z_STRLEN_P(val));
 			break;
@@ -432,10 +428,20 @@ static void binpack_do_encode(bin_packer_t *pk, zval *val)
 			break;
 
 		case IS_OBJECT:
+			/* TODO: pack blob
+			 * as in php, there is no difference between string and blob,
+			 * we encode blob as string
+			 *
+			if (zend_get_class_entry(val TSRMLS_CC) == bin_ce_BlobObject)
+			{
+				blob_object *intern = (blob_object *)zend_object_store_get_object(val TSRMLS_CC);
+				bin_pack_blob(pk, Z_STRVAL_P(intern->value), Z_STRLEN_P(intern->value));
+				break;
+			}
+			*/
 			/* fall through */
-
 		case IS_ARRAY:
-			binpack_encode_array(pk, val);
+			binpack_encode_array(pk, val TSRMLS_CC);
 			break;
 
 		default:
@@ -444,7 +450,7 @@ static void binpack_do_encode(bin_packer_t *pk, zval *val)
 	}
 }
 
-static int binpack_do_decode(bin_unpacker_t *uk, zval **val)
+static int binpack_do_decode(bin_unpacker_t *uk, zval **val TSRMLS_DC)
 {
 	uintmax_t num;
 	int type = bin_unpack_type(uk, &num);
@@ -459,8 +465,8 @@ static int binpack_do_decode(bin_unpacker_t *uk, zval **val)
 		if (type == BIN_TYPE_INTEGER || type == BIN_TYPE_INTEGER_NEGATIVE)
 		{
 			int sign = type & BIN_INTEGER_NEGATVIE_MASK;
-			/* if (num <= LONG_MAX || (sign && num <= LONG_MAX + 1)) */
-			/* more efficient */
+			// if (num <= LONG_MAX || (sign && num <= LONG_MAX + 1))
+			// more efficent
 			if (num <= LONG_MAX + sign)
 			{
 				if (sign)
@@ -476,7 +482,7 @@ static int binpack_do_decode(bin_unpacker_t *uk, zval **val)
 			}
 			else
 			{
-				/* reach long limit, convert to string */
+				// reach long limit, convert to string
 				char tmp[40], *s;
 				char *end = tmp + sizeof(tmp);
 				s = _itoa(end, num);
@@ -519,7 +525,7 @@ static int binpack_do_decode(bin_unpacker_t *uk, zval **val)
 		}
 		else if (type == BIN_TYPE_LIST)
 		{
-			bool make_list = binpack_make_list(uk, *val);
+			bool make_list = binpack_make_list(uk, *val TSRMLS_CC);
 			if (!make_list)
 			{
 				goto error;
@@ -527,7 +533,7 @@ static int binpack_do_decode(bin_unpacker_t *uk, zval **val)
 		}
 		else if (type == BIN_TYPE_DICT)
 		{
-			bool make_dict = binpack_make_dict(uk, *val);
+			bool make_dict = binpack_make_dict(uk, *val TSRMLS_CC);
 			if (!make_dict)
 			{
 				goto error;
@@ -539,7 +545,7 @@ static int binpack_do_decode(bin_unpacker_t *uk, zval **val)
 		}
 		else if (type == BIN_TYPE_CLOSURE)
 		{
-			/* do nothing, will never hit here unless someone do somthing nasty */
+			// do nothing, will never hit here unless someone do somthing nasty
 			goto error;
 		}
 		else
@@ -571,7 +577,7 @@ PHP_FUNCTION(bin_encode)
 	bin_packer_t pk;
 	bin_packer_init(&pk, binpack_write_buffer, &buf);
 
-	binpack_do_encode(&pk, val);
+	binpack_do_encode(&pk, val TSRMLS_CC);
 
 	ZVAL_STRINGL(return_value, buf.c, buf.len, 1);																  
 	smart_str_free(&buf);
@@ -601,12 +607,9 @@ PHP_FUNCTION(bin_decode)
 	}
 
 	bin_unpacker_init(&uk, str, str_len);
-	if (!binpack_do_decode(&uk, &ret)) 
+	int result = binpack_do_decode(&uk, &ret TSRMLS_CC);
+	if (result == -1) 
 	{
-		if (len)
-		{
-			ZVAL_LONG(len, -1);
-		}
 		ZVAL_NULL(return_value);
 		return;
 	}
@@ -614,8 +617,6 @@ PHP_FUNCTION(bin_decode)
 	{
 		*return_value = *ret;
 
-		// if (len)
-		//	ZVAL_LONG(len, uk.pos);
 		FREE_ZVAL(ret);
 	}
 }
