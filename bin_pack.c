@@ -487,7 +487,7 @@ int bin_unpack_bool(bin_unpacker_t *packer, bool *p_value)
     return 0;
 }
 
-static inline int _unpack_verify_simple_tag(bin_unpacker_t *packer, int tag)
+static __inline__ int _unpack_verify_simple_tag(bin_unpacker_t *packer, int tag)
 {
     if (packer->pos >= packer->size || packer->buf[packer->pos] != tag)
     {

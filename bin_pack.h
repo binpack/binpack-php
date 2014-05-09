@@ -20,6 +20,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include "bin_pack_def.h"
+/* #include <stdbool.h> */
 
 #ifdef __cplusplus
 extern "C" {
