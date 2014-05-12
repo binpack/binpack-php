@@ -63,25 +63,39 @@ typedef unsigned __int64 uint64_t;
 #endif
 
 #else
-#include <endian.h>
+#if defined(OS_MACOSX) || defined(__APPLE__)
+  #include <machine/endian.h>
+#elif defined(OS_SOLARIS)
+  #include <sys/isa_defs.h>
+  #ifdef _LITTLE_ENDIAN
+    #define LITTLE_ENDIAN
+  #else
+    #define BIG_ENDIAN
+  #endif
+#elif defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLYBSD)
+  #include <sys/types.h>
+  #include <sys/endian.h>
+#else
+  #include <endian.h>
+#endif
 #endif
 
 
 #if __BYTE_ORDER == __LITTLE_ENDIAN
 
-#define _binpack_be32(x) ntohl(x)
+#define do_binpack_be32(x) ntohl(x)
 
 /* windows */
 #if defined(_byteswap_uint64) || _MSC_VER >= 1400
-#  define _binpack_be64(x) (_byteswap_uint64(x))
+#  define do_binpack_be64(x) (_byteswap_uint64(x))
 /* linux */
 #elif defined(bswap_64)
-#  define _binpack_be64(x) bswap_64(x)
+#  define do_binpack_be64(x) bswap_64(x)
 /* Mac OS */
 #elif defined(__DARWIN_OSSwapInt64) 
-#  define _binpack_be64(x) __DARWIN_OSSwapInt64(x)
+#  define do_binpack_be64(x) __DARWIN_OSSwapInt64(x)
 #else
-#define _binpack_be64(x) \
+#define do_binpack_be64(x) \
 	( ((((uint64_t)x) << 56) & 0xff00000000000000ULL ) | \
 	  ((((uint64_t)x) << 40) & 0x00ff000000000000ULL ) | \
 	  ((((uint64_t)x) << 24) & 0x0000ff0000000000ULL ) | \
@@ -93,8 +107,8 @@ typedef unsigned __int64 uint64_t;
 #endif
 
 #elif __BYTE_ORDER == __BIG_ENDIAN
-#define _binpack_be32(x) (x)
-#define _binpack_be64(x) (x)
+#define do_binpack_be32(x) (x)
+#define do_binpack_be64(x) (x)
 #else
 #error Not supported __BYTE_ORDER
 #endif

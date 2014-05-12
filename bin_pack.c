@@ -36,7 +36,7 @@ static const char rcsid[] = "$Id: bin_pack.c, huqiu Exp $";
 #define SSIZE_MAX	(SIZE_MAX/2)
 #endif
 
-static const char *_tpnames[] = {
+static const char *binpack_tpnames[] = {
     "UNKNOWN",	/*  0 */
     "CLOSURE",	/*  1 */
     "LIST",		/*  2 */
@@ -50,20 +50,7 @@ static const char *_tpnames[] = {
     "INTEGER",	/* 10 */
 };
 
-static unsigned char _tpidx[BIN_TYPE_INTEGER + 1] = {
-    0, 1, 2, 3, 0, 0, 0, 0,		0, 0, 0, 0, 0, 0, 0, 4,
-    0, 0, 0, 0, 0, 0, 0, 0, 	7, 0, 0,10, 6, 0, 5, 0,
-    8, 0, 0, 0, 0, 0, 0, 0, 	0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 	0, 0, 0, 0, 0, 0, 0, 0,
-    9,
-};
-
-const char *bin_type_name(bin_type_t type)
-{
-    return (type >= 0 && type <= BIN_TYPE_INTEGER) ? _tpnames[_tpidx[type]] : _tpnames[0];
-}
-
-static inline size_t _pack_intstr(char *buf, int type, uintmax_t num)
+static inline size_t do_pack_intstr(char *buf, int type, uintmax_t num)
 {
     char *p = buf;
     while (num >= BIN_TAG_PACK_INTERGER)
@@ -76,7 +63,7 @@ static inline size_t _pack_intstr(char *buf, int type, uintmax_t num)
     return (p - buf);
 }
 
-static inline size_t _pack_uint_len(char *buf, int type, uintmax_t num)
+static inline size_t do_pack_uint_len(char *buf, int type, uintmax_t num)
 {
     char *p = buf;
     /* 0001 xxxx */
@@ -89,7 +76,7 @@ static inline size_t _pack_uint_len(char *buf, int type, uintmax_t num)
     return (p - buf);
 }
 
-static inline size_t _pack_tag(char *buf, int type, uintmax_t num)
+static inline size_t do_pack_tag(char *buf, int type, uintmax_t num)
 {
     char *p = buf;
     if (num)
@@ -107,25 +94,25 @@ static inline size_t _pack_tag(char *buf, int type, uintmax_t num)
 
 inline size_t bin_int_buffer(char *buf, intmax_t value)
 {
-    return value >= 0 ? _pack_intstr(buf, BIN_TYPE_INTEGER, value)
-        : _pack_intstr(buf, BIN_TYPE_INTEGER_NEGATIVE, -value);
+    return value >= 0 ? do_pack_intstr(buf, BIN_TYPE_INTEGER, value)
+        : do_pack_intstr(buf, BIN_TYPE_INTEGER_NEGATIVE, -value);
 }
 
 inline size_t bin_uint_buffer(char *buf, uintmax_t value)
 {
-    return _pack_intstr(buf, BIN_TYPE_INTEGER, value);
+    return do_pack_intstr(buf, BIN_TYPE_INTEGER, value);
 }
 
 inline size_t bin_strhead_buffer(char *buf, size_t strlen)
 {
     assert(strlen <= SSIZE_MAX);
-    return _pack_uint_len(buf, BIN_TYPE_STRING, strlen);
+    return do_pack_uint_len(buf, BIN_TYPE_STRING, strlen);
 }
 
 inline size_t bin_blobhead_buffer(char *buf, size_t bloblen)
 {
     assert(bloblen <= SSIZE_MAX);
-    return _pack_uint_len(buf, BIN_TYPE_BLOB, bloblen);
+    return do_pack_uint_len(buf, BIN_TYPE_BLOB, bloblen);
 }
 
 size_t bin_float_double_buffer(char *buf, double value)
@@ -133,7 +120,7 @@ size_t bin_float_double_buffer(char *buf, double value)
     union { double v; uint64_t c; } f;
 	f.v = value;
     
-    uint64_t x = _binpack_be64(f.c);
+    uint64_t x = do_binpack_be64(f.c);
 
     *buf++ = BIN_TYPE_FLOAT_DOUBLE;
     memcpy(buf, &x, 8);
@@ -148,7 +135,7 @@ size_t bin_float_single_buffer(char *buf, float value)
     union { float v; uint32_t c; } f;
 	f.v = value;
     
-    uint32_t x = _binpack_be32(f.c);
+    uint32_t x = do_binpack_be32(f.c);
     memcpy(buf, &x, 4);
 
     return 5;
@@ -223,7 +210,7 @@ int bin_unpack_type(bin_unpacker_t *packer, uintmax_t *p_num)
     return -1;
 }
 
-static inline int _unpack_int(bin_unpacker_t *packer, intmax_t *p_value)
+static inline int do_unpack_int(bin_unpacker_t *packer, intmax_t *p_value)
 {
     int type = bin_unpack_type(packer, (uintmax_t*)p_value);
     int sign = type & BIN_INTEGER_NEGATVIE_MASK;
@@ -256,7 +243,7 @@ static inline int _unpack_int(bin_unpacker_t *packer, intmax_t *p_value)
     return 0;
 }
 
-static inline int _unpack_unit(bin_unpacker_t *packer, intmax_t *p_value)
+static inline int do_unpack_unit(bin_unpacker_t *packer, intmax_t *p_value)
 {
     uintmax_t num;
 
@@ -367,12 +354,12 @@ int bin_pack_float_single(bin_packer_t *packer, float value)
 
 int bin_unpack_integer(bin_unpacker_t *packer, intmax_t *p_value)
 {
-    return _unpack_int(packer, p_value);
+    return do_unpack_int(packer, p_value);
 }
 
 int bin_unpack_uinteger(bin_unpacker_t *packer, uintmax_t *p_value)
 {
-    return _unpack_unit(packer, p_value);
+    return do_unpack_unit(packer, p_value);
 }
 
 inline int bin_unpack_lstring(bin_unpacker_t *packer, char **p_str, size_t *p_len)
@@ -420,22 +407,22 @@ int bin_unpack_blob(bin_unpacker_t *packer, void **p_data, size_t *p_len)
     return 0;
 }
 
-inline double bin_make_double(bin_unpacker_t *packer)
+double bin_make_double(bin_unpacker_t *packer)
 {
     union { uint64_t c; double v;} f;
 
     char *p = packer->buf + packer->pos;
-    f.c = _binpack_be64(*(uint64_t *)p);
+    f.c = do_binpack_be64(*(uint64_t *)p);
     packer->pos += 8;
     return f.v;
 }
 
-inline float bin_make_float(bin_unpacker_t *packer)
+float bin_make_float(bin_unpacker_t *packer)
 {
     union { uint32_t c; float v;} f;
     char *p = packer->buf + packer->pos;
 
-    f.c = _binpack_be32(*(uint32_t *)p);
+    f.c = do_binpack_be32(*(uint32_t *)p);
 
     return f.v;
 }
@@ -487,7 +474,7 @@ int bin_unpack_bool(bin_unpacker_t *packer, bool *p_value)
     return 0;
 }
 
-static inline int _unpack_verify_simple_tag(bin_unpacker_t *packer, int tag)
+static inline int do_unpack_verify_simple_tag(bin_unpacker_t *packer, int tag)
 {
     if (packer->pos >= packer->size || packer->buf[packer->pos] != tag)
     {
@@ -501,5 +488,5 @@ static inline int _unpack_verify_simple_tag(bin_unpacker_t *packer, int tag)
 
 int bin_unpack_null(bin_unpacker_t *packer)
 {
-    return _unpack_verify_simple_tag(packer, BIN_TYPE_NULL);
+    return do_unpack_verify_simple_tag(packer, BIN_TYPE_NULL);
 }

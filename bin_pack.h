@@ -101,8 +101,6 @@ typedef enum {
 } while(0)
 
 
-const char *bin_type_name(bin_type_t type);
-
 size_t bin_int_buffer(char *buf, intmax_t value);
 size_t bin_uint_buffer(char *buf, uintmax_t value);
 size_t bin_real_buffer(char *buf, double value);
@@ -150,8 +148,8 @@ int bin_unpack_float_single(bin_unpacker_t *job, float *p_value);
 int bin_unpack_bool(bin_unpacker_t *job, bool *p_value);
 int bin_unpack_null(bin_unpacker_t *job);
 
-inline double bin_make_double(bin_unpacker_t *packer);
-inline float bin_make_float(bin_unpacker_t *packer);
+double bin_make_double(bin_unpacker_t *packer);
+float bin_make_float(bin_unpacker_t *packer);
 #ifdef __cplusplus
 }
 #endif
