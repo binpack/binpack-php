@@ -63,7 +63,7 @@ const char *bin_type_name(bin_type_t type)
     return (type >= 0 && type <= BIN_TYPE_INTEGER) ? _tpnames[_tpidx[type]] : _tpnames[0];
 }
 
-static inline size_t _pack_intstr(char *buf, int type, uintmax_t num)
+static BINPACK_INLINE size_t _pack_intstr(char *buf, int type, uintmax_t num)
 {
     char *p = buf;
     while (num >= BIN_TAG_PACK_INTERGER)
@@ -76,7 +76,7 @@ static inline size_t _pack_intstr(char *buf, int type, uintmax_t num)
     return (p - buf);
 }
 
-static inline size_t _pack_uint_len(char *buf, int type, uintmax_t num)
+static BINPACK_INLINE size_t _pack_uint_len(char *buf, int type, uintmax_t num)
 {
     char *p = buf;
     /* 0001 xxxx */
@@ -89,7 +89,7 @@ static inline size_t _pack_uint_len(char *buf, int type, uintmax_t num)
     return (p - buf);
 }
 
-static inline size_t _pack_tag(char *buf, int type, uintmax_t num)
+static BINPACK_INLINE size_t _pack_tag(char *buf, int type, uintmax_t num)
 {
     char *p = buf;
     if (num)
@@ -105,24 +105,24 @@ static inline size_t _pack_tag(char *buf, int type, uintmax_t num)
     return (p - buf);
 }
 
-inline size_t bin_int_buffer(char *buf, intmax_t value)
+BINPACK_INLINE size_t bin_int_buffer(char *buf, intmax_t value)
 {
     return value >= 0 ? _pack_intstr(buf, BIN_TYPE_INTEGER, value)
         : _pack_intstr(buf, BIN_TYPE_INTEGER_NEGATIVE, -value);
 }
 
-inline size_t bin_uint_buffer(char *buf, uintmax_t value)
+BINPACK_INLINE size_t bin_uint_buffer(char *buf, uintmax_t value)
 {
     return _pack_intstr(buf, BIN_TYPE_INTEGER, value);
 }
 
-inline size_t bin_strhead_buffer(char *buf, size_t strlen)
+BINPACK_INLINE size_t bin_strhead_buffer(char *buf, size_t strlen)
 {
     assert(strlen <= SSIZE_MAX);
     return _pack_uint_len(buf, BIN_TYPE_STRING, strlen);
 }
 
-inline size_t bin_blobhead_buffer(char *buf, size_t bloblen)
+BINPACK_INLINE size_t bin_blobhead_buffer(char *buf, size_t bloblen)
 {
     assert(bloblen <= SSIZE_MAX);
     return _pack_uint_len(buf, BIN_TYPE_BLOB, bloblen);
@@ -223,7 +223,7 @@ int bin_unpack_type(bin_unpacker_t *packer, uintmax_t *p_num)
     return -1;
 }
 
-static inline int _unpack_int(bin_unpacker_t *packer, intmax_t *p_value)
+static BINPACK_INLINE int _unpack_int(bin_unpacker_t *packer, intmax_t *p_value)
 {
     int type = bin_unpack_type(packer, (uintmax_t*)p_value);
     int sign = type & BIN_INTEGER_NEGATVIE_MASK;
@@ -256,7 +256,7 @@ static inline int _unpack_int(bin_unpacker_t *packer, intmax_t *p_value)
     return 0;
 }
 
-static inline int _unpack_unit(bin_unpacker_t *packer, intmax_t *p_value)
+static BINPACK_INLINE int _unpack_unit(bin_unpacker_t *packer, intmax_t *p_value)
 {
     uintmax_t num;
 
@@ -299,7 +299,7 @@ int bin_pack_uinteger(bin_packer_t *packer, uintmax_t value)
     return 0;
 }
 
-inline int bin_pack_lstring(bin_packer_t *packer, const char *str, size_t len)
+BINPACK_INLINE int bin_pack_lstring(bin_packer_t *packer, const char *str, size_t len)
 {
     char tmpbuf[TMPBUF_SIZE];
     size_t n = bin_strhead_buffer(tmpbuf, len);
@@ -375,7 +375,7 @@ int bin_unpack_uinteger(bin_unpacker_t *packer, uintmax_t *p_value)
     return _unpack_unit(packer, p_value);
 }
 
-inline int bin_unpack_lstring(bin_unpacker_t *packer, char **p_str, size_t *p_len)
+BINPACK_INLINE int bin_unpack_lstring(bin_unpacker_t *packer, char **p_str, size_t *p_len)
 {
     uintmax_t num;
 
@@ -420,7 +420,7 @@ int bin_unpack_blob(bin_unpacker_t *packer, void **p_data, size_t *p_len)
     return 0;
 }
 
-inline double bin_make_double(bin_unpacker_t *packer)
+BINPACK_INLINE double bin_make_double(bin_unpacker_t *packer)
 {
     union { uint64_t c; double v;} f;
 
@@ -430,7 +430,7 @@ inline double bin_make_double(bin_unpacker_t *packer)
     return f.v;
 }
 
-inline float bin_make_float(bin_unpacker_t *packer)
+BINPACK_INLINE float bin_make_float(bin_unpacker_t *packer)
 {
     union { uint32_t c; float v;} f;
     char *p = packer->buf + packer->pos;
@@ -487,7 +487,7 @@ int bin_unpack_bool(bin_unpacker_t *packer, bool *p_value)
     return 0;
 }
 
-static __inline__ int _unpack_verify_simple_tag(bin_unpacker_t *packer, int tag)
+static BINPACK_INLINE int _unpack_verify_simple_tag(bin_unpacker_t *packer, int tag)
 {
     if (packer->pos >= packer->size || packer->buf[packer->pos] != tag)
     {

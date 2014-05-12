@@ -43,7 +43,7 @@ typedef enum {
     BIN_TYPE_STRING   	            = 0x20,		/* 0010 xxxx   */
     
     BIN_TYPE_INTEGER 	            = 0x40,		/* 010x xxxx + */
-    BIN_TYPE_INTEGER_NEGATIVE    	= 0x60,     /* 011x xxxx - */
+    BIN_TYPE_INTEGER_NEGATIVE    	= 0x60     /* 011x xxxx - */
 } bin_type_t;
 
 #define BIN_INTEGER_TYPE_64                 0x00 << 3   /* default implementation */
@@ -151,8 +151,8 @@ int bin_unpack_float_single(bin_unpacker_t *job, float *p_value);
 int bin_unpack_bool(bin_unpacker_t *job, bool *p_value);
 int bin_unpack_null(bin_unpacker_t *job);
 
-inline double bin_make_double(bin_unpacker_t *packer);
-inline float bin_make_float(bin_unpacker_t *packer);
+BINPACK_INLINE double bin_make_double(bin_unpacker_t *packer);
+BINPACK_INLINE float bin_make_float(bin_unpacker_t *packer);
 #ifdef __cplusplus
 }
 #endif
