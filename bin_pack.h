@@ -144,8 +144,8 @@ int bin_unpack_float_single(bin_unpacker_t *job, float *p_value);
 int bin_unpack_bool(bin_unpacker_t *job, bool *p_value);
 int bin_unpack_null(bin_unpacker_t *job);
 
-BINPACK_INLINE double bin_make_double(bin_unpacker_t *packer);
-BINPACK_INLINE float bin_make_float(bin_unpacker_t *packer);
+double bin_make_double(bin_unpacker_t *packer);
+float bin_make_float(bin_unpacker_t *packer);
 #ifdef __cplusplus
 }
 #endif
