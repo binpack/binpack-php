@@ -21,7 +21,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "bin_pack_def.h"
-/* #include <stdbool.h> */
 
 #ifdef __cplusplus
 extern "C" {
@@ -102,8 +101,6 @@ typedef enum {
 } while(0)
 
 
-const char *bin_type_name(bin_type_t type);
-
 size_t bin_int_buffer(char *buf, intmax_t value);
 size_t bin_uint_buffer(char *buf, uintmax_t value);
 size_t bin_real_buffer(char *buf, double value);
@@ -111,22 +108,18 @@ size_t bin_real_buffer(char *buf, double value);
 size_t bin_strhead_buffer(char *buf, size_t strlen);
 size_t bin_blobhead_buffer(char *buf, size_t bloblen);
 
-
-typedef struct bin_packer_t bin_packer_t;
-struct bin_packer_t {
-	ssize_t (*write)(void *buf, const void *data, size_t size);
+typedef struct bin_packer_t {
+	int (*write)(void *buf, const void *data, size_t size);
 	void *buf;
 	int error;
-};
+} bin_packer_t;
 
-
-typedef struct bin_unpacker_t bin_unpacker_t;
-struct bin_unpacker_t {
+typedef struct bin_unpacker_t {
 	char *buf;
 	size_t size;
 	size_t pos;
 	int error;
-};
+} bin_unpacker_t;
 
 /* 
  * Return 0 if success. 
