@@ -47,14 +47,14 @@ typedef enum {
 
 #define BIN_MASK_INTEGER_SIGN               0x20        /* check if integer is negative */
 
-#define BIN_MASK_INTEGER_TYPE               0x60        /* 0110 0000: integer or negative integer */
-#define BIN_MASK_STRING_OR_BLOB             0x30        /* 000x x000: the sub-type */
+#define BIN_MASK_TYPE_INTEGER               0x60        /* 0110 0000: integer or negative integer */
+#define BIN_MASK_TYPE_STRING_OR_BLOB        0x30        /* 00xx 0000: string or blob */
 
 #define BIN_MASK_LAST_INTEGER               0x1f        /* 000x xxxx the last 5 bits */
 #define BIN_MASK_LAST_UINT_LEN              0x0f        /* 0000 xxxx the last 4 bits will be uesd to pack unit len */
 
-#define BIN_TAG_PACK_INTERGER               0x08        /* 0000 0xxx */
-#define BIN_TAG_PACK_NUM                    0x10        /* 0000 xxxx */
+#define BIN_TAG_PACK_INTERGER               0x20        /* 000x xxxx */
+#define BIN_TAG_PACK_UINT_LEN               0x10        /* 0000 xxxx */
 
 #define bin_bool_byte(value)	((unsigned char)((value) ? BIN_TYPE_BOOL : BIN_TYPE_BOOL_FALSE))
 #define bin_null_byte()		((unsigned char)BIN_TYPE_NULL)

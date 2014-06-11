@@ -67,7 +67,7 @@ static BINPACK_INLINE size_t do_pack_uint_len(char *buf, int type, uintmax_t num
 {
     char *p = buf;
     /* 0001 xxxx */
-    while (num >= BIN_TAG_PACK_NUM)
+    while (num >= BIN_TAG_PACK_UINT_LEN)
     {
         *p++ = 0x80 | num;
         num >>= 7;
@@ -186,7 +186,7 @@ int bin_unpack_type(bin_unpacker_t *packer, uintmax_t *p_num)
              */
             if (x >= BIN_TYPE_INTEGER)
             {
-                type = x & BIN_MASK_INTEGER_TYPE;
+                type = x & BIN_MASK_TYPE_INTEGER;
                 num |= (uintmax_t)(x & BIN_MASK_LAST_INTEGER) << shift;
             }
             /* pack:    0000 xxxx, only 4 bits to pack data
@@ -194,7 +194,7 @@ int bin_unpack_type(bin_unpacker_t *packer, uintmax_t *p_num)
              */
             else
             {
-                type = x & BIN_MASK_STRING_OR_BLOB;
+                type = x & BIN_MASK_TYPE_STRING_OR_BLOB;
                 num |= (uintmax_t)(x & BIN_MASK_LAST_UINT_LEN) << shift;
             }
         }

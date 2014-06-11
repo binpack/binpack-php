@@ -54,8 +54,8 @@ test('array-list', $arr);
 ?>
 --EXPECT--
 array-list
-buffer : 024142438a4001
-     0 : 02 41 42 43 8a 40 01 [.ABC.@.]
+buffer : 024142434a01
+     0 : 02 41 42 43 4a 01 [.ABCJ.]
 
 array(4) {
   [0]=>
