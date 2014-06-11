@@ -156,10 +156,8 @@ int bin_unpack_type(bin_unpacker_t *packer, uintmax_t *p_num)
         if (x >= 0x80)
         {
             int left = sizeof(uintmax_t) * 8 ;
-            int i = 0;
             while (x >= 0x80)
             {
-                i++;
                 x &= 0x7f;
                 num |= ((uintmax_t)x) << shift;
 
@@ -183,21 +181,21 @@ int bin_unpack_type(bin_unpacker_t *packer, uintmax_t *p_num)
         }
         else
         {
-            /* pack:    0000 1xxx
-             * type:    0xxx x000, integer, bit 5 & 6 directive sub-type information.
+            /* pack:    000x xxxx
+             * type:    0xxx x000, integer, bit 5 & 6 directive sub-type inf
              */
             if (x >= BIN_TYPE_INTEGER)
             {
-                type = x & 0x60;
-                num |= (uintmax_t)(x & 0x07) << shift;
+                type = x & BIN_MASK_INTEGER_TYPE;
+                num |= (uintmax_t)(x & BIN_MASK_LAST_INTEGER) << shift;
             }
-            /* pack:    0001 xxxx, one more bit to pack data
-             * type:    0xxx 0000, double / string / blob
+            /* pack:    0000 xxxx, only 4 bits to pack data
+             * type:    00xx 0000, string / blob
              */
             else
             {
-                type = x & 0x70;
-                num |= (uintmax_t)(x & 0x0f) << shift;
+                type = x & BIN_MASK_STRING_OR_BLOB;
+                num |= (uintmax_t)(x & BIN_MASK_LAST_UINT_LEN) << shift;
             }
         }
 
@@ -213,8 +211,7 @@ int bin_unpack_type(bin_unpacker_t *packer, uintmax_t *p_num)
 static BINPACK_INLINE int do_unpack_int(bin_unpacker_t *packer, intmax_t *p_value)
 {
     int type = bin_unpack_type(packer, (uintmax_t*)p_value);
-    int sign = type & BIN_INTEGER_NEGATVIE_MASK;
-    int sub_type = type & BIN_INTEGER_SUBTYPE_MASK;
+    int sign = type & BIN_MASK_INTEGER_SIGN;
 
     if (type < BIN_TYPE_INTEGER)
     {
@@ -248,8 +245,7 @@ static BINPACK_INLINE int do_unpack_unit(bin_unpacker_t *packer, intmax_t *p_val
     uintmax_t num;
 
     int type = bin_unpack_type(packer, (uintmax_t*)p_value);
-    int sign = type & BIN_INTEGER_NEGATVIE_MASK;
-    int sub_type = type & BIN_INTEGER_SUBTYPE_MASK;
+    int sign = type & BIN_MASK_INTEGER_SIGN;
 
     if (type < BIN_TYPE_INTEGER || sign)
     {

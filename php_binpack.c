@@ -378,7 +378,7 @@ static bool binpack_make_dict(bin_unpacker_t *uk, zval *dict TSRMLS_DC)
 				return false;
 			}
 
-			int sign = key_type & BIN_INTEGER_NEGATVIE_MASK;
+			int sign = key_type & BIN_MASK_INTEGER_SIGN;
 			// if (num <= LONG_MAX || (sign && num <= LONG_MAX + 1))
 			if (num <= LONG_MAX + sign)
 			{
@@ -464,7 +464,7 @@ static int binpack_do_decode(bin_unpacker_t *uk, zval **val TSRMLS_DC)
 
 		if (type == BIN_TYPE_INTEGER || type == BIN_TYPE_INTEGER_NEGATIVE)
 		{
-			int sign = type & BIN_INTEGER_NEGATVIE_MASK;
+			int sign = type & BIN_MASK_INTEGER_SIGN;
 			// if (num <= LONG_MAX || (sign && num <= LONG_MAX + 1))
 			// more efficent
 			if (num <= LONG_MAX + sign)

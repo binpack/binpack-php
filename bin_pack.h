@@ -42,17 +42,16 @@ typedef enum {
     BIN_TYPE_STRING   	            = 0x20,		/* 0010 xxxx   */
     
     BIN_TYPE_INTEGER 	            = 0x40,		/* 010x xxxx + */
-    BIN_TYPE_INTEGER_NEGATIVE    	= 0x60     /* 011x xxxx - */
+    BIN_TYPE_INTEGER_NEGATIVE    	= 0x60      /* 011x xxxx - */
 } bin_type_t;
 
-#define BIN_INTEGER_TYPE_64                 0x00 << 3   /* default implementation */
-#define BIN_INTEGER_TYPE_8                  0x01 << 3
-#define BIN_INTEGER_TYPE_16                 0x02 << 3
-#define BIN_INTEGER_TYPE_32                 0x03 << 3
+#define BIN_MASK_INTEGER_SIGN               0x20        /* check if integer is negative */
 
-#define BIN_INTEGER_SUBTYPE_MASK            0x03 << 3
+#define BIN_MASK_INTEGER_TYPE               0x60        /* 0110 0000: integer or negative integer */
+#define BIN_MASK_STRING_OR_BLOB             0x30        /* 000x x000: the sub-type */
 
-#define BIN_INTEGER_NEGATVIE_MASK           0x20        /* 001x xxxx, 2 bits for type, 3 bits for packing */
+#define BIN_MASK_LAST_INTEGER               0x1f        /* 000x xxxx the last 5 bits */
+#define BIN_MASK_LAST_UINT_LEN              0x0f        /* 0000 xxxx the last 4 bits will be uesd to pack unit len */
 
 #define BIN_TAG_PACK_INTERGER               0x08        /* 0000 0xxx */
 #define BIN_TAG_PACK_NUM                    0x10        /* 0000 xxxx */
