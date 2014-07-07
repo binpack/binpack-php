@@ -200,9 +200,4 @@ foreach ($types as $type)
         $serialize_size,
         $bin_size, ($bin_size / $serialize_size * 100),
         $msgpack_size, ($msgpack_size / $serialize_size * 100));
-    if ($value_display === true)
-    {
-        var_dump($value);
-        echo PHP_EOL;
-    }
 }
