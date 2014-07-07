@@ -40,8 +40,7 @@ function genData($type)
             md5(rand()) => md5(rand()));
         break;
     case 'mix':
-
-        $types = array(
+        $element_types = array(
             'integer',
             'float',
             'string',
@@ -49,7 +48,7 @@ function genData($type)
             'hash',
         );
         $value = array();
-        foreach ($types as $t)
+        foreach ($element_types as $element)
         {
             $value[] = genData($t);
         }
