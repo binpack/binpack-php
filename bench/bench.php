@@ -104,13 +104,12 @@ foreach ($types as $type)
         $serialize_unpack += ($end - $start);
 
         $serialize_size += strlen($pack);
-        if ($unpack === $value ||
-            (is_object($value) && $unpack == $value))
+        if ($unpack === $value)
         {
             $serialize_status = 'OK';
         }
 
-        //bin
+        //binpack
         $pack = null;
         $unpack = null;
         $opt = false;
@@ -135,11 +134,7 @@ foreach ($types as $type)
         $bin_unpack += ($end - $start);
 
         $bin_size += strlen($pack);
-        if ($unpack === $value ||
-            (is_object($value) && $unpack == $value) ||
-            (is_float($value) &&
-            number_format($value, 10, '.', '') ===
-            number_format($unpack, 10, '.', '')))
+        if ($unpack === $value)
         {
             $bin_status = 'OK';
         }
@@ -164,8 +159,7 @@ foreach ($types as $type)
         $msgpack_unpack += ($end - $start);
 
         $msgpack_size += strlen($pack);
-        if ($unpack === $value ||
-            (is_object($value) && $unpack == $value))
+        if ($unpack === $value)
         {
             $msgpack_status = 'OK';
         }
