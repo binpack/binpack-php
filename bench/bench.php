@@ -1,9 +1,10 @@
 <?php
 $loop = 10000;
 $retry = 10;
-$value_display = false;
 
 $types = array(
+    'null',
+    'bool',
     'integer',
     'float',
     'string',
@@ -16,6 +17,12 @@ function genData($type)
 {
     switch ($type)
     {
+    case 'null':
+        $value = null;
+        break;
+    case 'bool':
+        $value = rand() % 2;
+        break;
     case 'integer':
         $value = rand();
         break;
@@ -41,6 +48,8 @@ function genData($type)
         break;
     case 'mix':
         $element_types = array(
+            'null',
+            'bool',
             'integer',
             'float',
             'string',
