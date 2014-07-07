@@ -183,7 +183,7 @@ foreach ($types as $type)
     $msgpack_size /= $retry;
 
     printf("[%-10s] %13s %13s %13s\n",
-        $type, 'default', 'bin', 'msgpack');
+        $type, 'default', 'binpack', 'msgpack');
     printf("status     : %12s  %12s  %12s\n",
         $serialize_status, $bin_status, $msgpack_status);
     printf("serialize  : %.4f (100%%) %.4f (%3d%%) %.4f (%3d%%)\n",
