@@ -17,6 +17,8 @@
 #ifndef PHP_BINPACK_H
 #define PHP_BINPACK_H
 
+#define BINPACK_EXTENSION_VERSION "1.0.1"
+
 extern zend_module_entry binpack_module_entry;
 #define phpext_binpack_ptr &binpack_module_entry
 
