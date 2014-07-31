@@ -51,5 +51,5 @@ int main ()
 
     test_pack_string();
 
-    printf("", sizeof(intmax_t));
+    printf ("size: %d\n", sizeof(intmax_t));
 }
