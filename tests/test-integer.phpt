@@ -7,14 +7,17 @@ if(!extension_loaded('binpack')) {
     dl('binpack.' . PHP_SHLIB_SUFFIX);
 }
 
-function test($title, $value) {
+function test($title, $value, $dump = true) {
     $buf = bin_encode($value);
     $data = bin_decode($buf);
 
-    echo $title, PHP_EOL;
-    echo 'buffer : ' . bin2hex($buf),  PHP_EOL;
-    echo hex_dump($buf), PHP_EOL;
-    var_dump($data);
+    if ($dump)
+    {
+        echo $title, PHP_EOL;
+        echo 'buffer : ' . bin2hex($buf),  PHP_EOL;
+        echo hex_dump($buf), PHP_EOL;
+        var_dump($data);
+    }
     echo $data === $value ? 'OK' : 'ERROR', PHP_EOL;
 }
 
@@ -53,11 +56,11 @@ test('integer', -2);
 test('integer', -1);
 test('integer', 0);
 test('integer', 1);
-test('integer', PHP_INT_MAX);
-test('integer', -PHP_INT_MAX);
-test('integer', -PHP_INT_MAX - 1);
-test('integer', PHP_INT_MAX + 1);
-test('integer', -PHP_INT_MAX - 2);
+test('integer', PHP_INT_MAX, false);
+test('integer', -PHP_INT_MAX, false);
+test('integer', -PHP_INT_MAX - 1, false);
+test('integer', PHP_INT_MAX + 1, false);
+test('integer', -PHP_INT_MAX - 2, false);
 ?>
 --EXPECT--
 integer
@@ -84,33 +87,8 @@ buffer : 41
 
 int(1)
 OK
-integer
-buffer : ffffffffffffffffff40
-     0 : ff ff ff ff ff ff ff ff ff 40 [.........@]
-
-int(9223372036854775807)
 OK
-integer
-buffer : ffffffffffffffffff60
-     0 : ff ff ff ff ff ff ff ff ff 60 [.........`]
-
-int(-9223372036854775807)
 OK
-integer
-buffer : 80808080808080808061
-     0 : 80 80 80 80 80 80 80 80 80 61 [.........a]
-
-int(-9223372036854775808)
 OK
-integer
-buffer : 0643e0000000000000
-     0 : 06 43 e0 00 00 00 00 00 00 [.C.......]
-
-float(9.2233720368548E+18)
 OK
-integer
-buffer : 06c3e0000000000000
-     0 : 06 c3 e0 00 00 00 00 00 00 [.........]
-
-float(-9.2233720368548E+18)
 OK
