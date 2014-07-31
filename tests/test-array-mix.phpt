@@ -7,14 +7,18 @@ if(!extension_loaded('binpack')) {
     dl('binpack.' . PHP_SHLIB_SUFFIX);
 }
 
-function test($title, $value) {
+function test($title, $value, $dump = true) {
     $buf = bin_encode($value);
     $data = bin_decode($buf);
 
-    echo $title, PHP_EOL;
-    echo 'buffer : ' . bin2hex($buf),  PHP_EOL;
-    echo hex_dump($buf), PHP_EOL;
-    var_dump($data);
+    if ($dump)
+    {
+        echo $title, PHP_EOL;
+        echo 'buffer : ' . bin2hex($buf),  PHP_EOL;
+        echo hex_dump($buf), PHP_EOL;
+        var_dump($value);
+        var_dump($data);
+    }
     echo $data === $value ? 'OK' : 'ERROR', PHP_EOL;
 }
 
@@ -67,7 +71,22 @@ $data[] = false;
 $data['num'] = 1111.23423;
 $data['map'] = array('name' => 'srain', 'gender' => 1);
 $data['list'] = array(1, 2, 3);
-test('array', $data);
+test('array', $data, false);
+
+$data = array();
+
+$data[-1] = -2;
+$data[] = -1;
+$data[] = 0;
+$data[] = 1;
+
+$data[] = null;
+$data[] = true;
+$data[] = false;
+$data['num'] = 1111.23423;
+$data['map'] = array('name' => 'srain', 'gender' => 1);
+$data['list'] = array(1, 2, 3);
+test('array', $data, true);
 ?>
 --EXPECT--
 array

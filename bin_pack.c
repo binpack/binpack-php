@@ -182,7 +182,7 @@ int bin_unpack_type(bin_unpacker_t *packer, uintmax_t *p_num)
         else
         {
             /* pack:    000x xxxx
-             * type:    0xxx x000, integer, bit 5 & 6 directive sub-type inf
+             * type:    0xx0 0000
              */
             if (x >= BIN_TYPE_INTEGER)
             {
