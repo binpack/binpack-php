@@ -197,19 +197,21 @@ static inline char *_itoa(char *bufend, uintmax_t value)
 
 inline static int binpack_check_ht_is_map(zval *array TSRMLS_DC) 
 {
-    int count = zend_hash_num_elements(Z_ARRVAL_P(array));
+	HashTable *ht = Z_ARRVAL_P(array);
+    int count = zend_hash_num_elements(ht);
 
-    if (count != (Z_ARRVAL_P(array))->nNextFreeElement) {
+    if (count != ht->nNextFreeElement) {
         return 1;
     } else {
         int i;
         HashPosition pos = {0};
-        zend_hash_internal_pointer_reset_ex(Z_ARRVAL_P(array), &pos);
+        zend_hash_internal_pointer_reset_ex(ht, &pos);
+
         for (i = 0; i < count; i++) {
-            if (zend_hash_get_current_key_type_ex(Z_ARRVAL_P(array), &pos) != HASH_KEY_IS_LONG) {
+            if (zend_hash_get_current_key_type_ex(ht, &pos) != HASH_KEY_IS_LONG) {
                 return 1;
             }
-            zend_hash_move_forward_ex(Z_ARRVAL_P(array), &pos);
+            zend_hash_move_forward_ex(ht, &pos);
         }
     }
     return 0;
@@ -257,7 +259,7 @@ static void binpack_encode_array(bin_packer_t *pk, zval *arr TSRMLS_DC)
 
 	if (num > 0)
 	{
-		ulong idx;
+		long idx;
 		char *key;
 		uint key_len;
 		HashPosition pos;
