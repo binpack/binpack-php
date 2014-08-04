@@ -51,5 +51,7 @@ int main ()
 
     test_pack_string();
 
-    printf ("size: %d\n", sizeof(intmax_t));
+    ulong num = -2;
+    printf ("size: %d\n", sizeof(ulong));
+    printf ("num: %u\n", num);
 }
