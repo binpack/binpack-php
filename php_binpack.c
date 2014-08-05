@@ -29,7 +29,7 @@
 #include "ext/standard/info.h"
 #include "ext/standard/php_smart_str.h"			/* for smart_str */
 
-#include "php_binpack.h"			
+#include "php_binpack.h"
 #include "bin_pack.h"
 
 #include <stdio.h>
@@ -153,6 +153,8 @@ PHP_MINFO_FUNCTION(binpack)
 {
 	php_info_print_table_start();
 	php_info_print_table_header(2, "binpack support", "enabled");
+	php_info_print_table_row(2, "Version", BINPACK_EXTENSION_VERSION);
+
 	php_info_print_table_end();
 
 	/* Remove comments if you have entries in php.ini
@@ -195,19 +197,21 @@ static inline char *_itoa(char *bufend, uintmax_t value)
 
 inline static int binpack_check_ht_is_map(zval *array TSRMLS_DC) 
 {
-    int count = zend_hash_num_elements(Z_ARRVAL_P(array));
+	HashTable *ht = Z_ARRVAL_P(array);
+    int count = zend_hash_num_elements(ht);
 
-    if (count != (Z_ARRVAL_P(array))->nNextFreeElement) {
+    if (count != ht->nNextFreeElement) {
         return 1;
     } else {
         int i;
         HashPosition pos = {0};
-        zend_hash_internal_pointer_reset_ex(Z_ARRVAL_P(array), &pos);
+        zend_hash_internal_pointer_reset_ex(ht, &pos);
+
         for (i = 0; i < count; i++) {
-            if (zend_hash_get_current_key_type_ex(Z_ARRVAL_P(array), &pos) != HASH_KEY_IS_LONG) {
+            if (zend_hash_get_current_key_type_ex(ht, &pos) != HASH_KEY_IS_LONG) {
                 return 1;
             }
-            zend_hash_move_forward_ex(Z_ARRVAL_P(array), &pos);
+            zend_hash_move_forward_ex(ht, &pos);
         }
     }
     return 0;
@@ -255,7 +259,7 @@ static void binpack_encode_array(bin_packer_t *pk, zval *arr TSRMLS_DC)
 
 	if (num > 0)
 	{
-		ulong idx;
+		long idx;
 		char *key;
 		uint key_len;
 		HashPosition pos;
@@ -379,8 +383,7 @@ static bool binpack_make_dict(bin_unpacker_t *uk, zval *dict TSRMLS_DC)
 			}
 
 			int sign = key_type & BIN_MASK_INTEGER_SIGN;
-			// if (num <= LONG_MAX || (sign && num <= LONG_MAX + 1))
-			if (num <= LONG_MAX + sign)
+			if (num <= BIN_LONG_MAX || (sign && num <= BIN_LONG_MIN))
 			{
 				if (sign)
 					add_index_zval(dict, -num, dict_val);
@@ -465,9 +468,7 @@ static int binpack_do_decode(bin_unpacker_t *uk, zval **val TSRMLS_DC)
 		if (type == BIN_TYPE_INTEGER || type == BIN_TYPE_INTEGER_NEGATIVE)
 		{
 			int sign = type & BIN_MASK_INTEGER_SIGN;
-			// if (num <= LONG_MAX || (sign && num <= LONG_MAX + 1))
-			// more efficent
-			if (num <= LONG_MAX + sign)
+			if (num <= BIN_LONG_MAX || (sign && num <= BIN_LONG_MIN))
 			{
 				if (sign)
 				{

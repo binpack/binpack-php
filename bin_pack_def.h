@@ -29,6 +29,17 @@
 #endif
 
 /*
+ * for long max
+ */
+#if LONG_MAX == 0x7FFFFFFFL
+    #define BIN_LONG_MAX 0x7FFFFFFFUL
+    #define BIN_LONG_MIN 0x80000000UL
+#else
+    #define BIN_LONG_MAX 0X7FFFFFFFFFFFFFFFUL
+    #define BIN_LONG_MIN 0X8000000000000000UL
+#endif
+
+/*
  * Use inlined functions for supported systems.
  */
 #if defined(__GNUC__) || defined(__DMC__) || defined(__POCC__) || defined(__WATCOMC__) || defined(__SUNPRO_C)

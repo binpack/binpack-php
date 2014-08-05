@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "bin_pack.h"
 
 typedef struct {
 	char *c;
@@ -143,11 +144,11 @@ do                                                              \
     smart_str str = {0};                                \
                                                               \
     bin_packer_t pk;                                                              \
-    bin_packer_init(&pk, smart_write, &str, 0);                                                              \
+    bin_packer_init(&pk, smart_write, &str);                                                              \
     action(&pk, value);                                                              \
                                                               \
     bin_unpacker_t uk;                                                              \
-    bin_unpacker_init(&uk, str.c, str.len, 0);                                                              \
+    bin_unpacker_init(&uk, str.c, str.len);                                                              \
 \
     print_smart_str(&str);  \
     type nv;\
