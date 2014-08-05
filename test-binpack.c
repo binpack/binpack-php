@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdarg.h>
+#include <inttypes.h>
 
 static void test_pack_string()
 {
@@ -51,7 +52,17 @@ int main ()
 
     test_pack_string();
 
-    ulong num = -2;
-    printf ("size: %d\n", sizeof(ulong));
-    printf ("num: %u\n", num);
+    char num = -1;
+    unsigned char num1 = num;
+    uintmax_t num2 = num;
+    printf ("size: %d\n", sizeof(LONG_MAX));
+    printf ("u: %u\n", (unsigned short)-1);
+    printf ("u: %u\n", num2);
+    printf ("num2: %ld\n", num2);
+    printf("%" PRIu64 "\n", num);
+
+    if (__BYTE_ORDER == __LITTLE_ENDIAN)
+        printf ("little endian");
+    else
+        printf ("big endian");
 }
