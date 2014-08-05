@@ -1,84 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package packagerversion="1.9.5" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
- <name>binpack</name>
- <channel>pecl.php.net</channel>
- <summary>binpack for PHP.</summary>
- <description>The php implementation for BINPACK.</description>
- <lead>
-  <name>Huqiu Liao</name>
-  <user>srain</user>
-  <email>srain@php.net</email>
-  <active>yes</active>
- </lead>
- <date>2014-07-26</date>
- <time>14:25:16</time>
- <version>
-  <release>1.0.0</release>
-  <api>1.0.0</api>
- </version>
- <stability>
-  <release>stable</release>
-  <api>stable</api>
- </stability>
- <license uri="http://www.php.net/license">PHP</license>
- <notes>
-- first release
- </notes>
- <contents>
-  <dir name="/">
-   <file name="tests/001.phpt" role="test" />
-   <file name="tests/test-bool.phpt" role="test" />
-   <file name="tests/test-array-map.phpt" role="test" />
-   <file name="tests/test-array-list.phpt" role="test" />
-   <file name="tests/test-null.phpt" role="test" />
-   <file name="tests/test-double.phpt" role="test" />
-   <file name="tests/test-array-mix.phpt" role="test" />
-   <file name="tests/test-blob.phpt" role="test" />
-   <file name="tests/test-array-ref.phpt" role="test" />
-   <file name="tests/test-integer.phpt" role="test" />
-   <file name="tests/test-string.phpt" role="test" />
-   <file name="bench/bench.php" role="test" />
-   <file name="README.md" role="doc" />
-   <file name="LICENSE" role="doc" />
-   <file name="CREDITS" role="doc" />
-   <file name="config.m4" role="src" />
-   <file name="config.w32" role="src" />
-   <file name="bin_pack.c" role="src" />
-   <file name="bin_pack.h" role="src" />
-   <file name="php_binpack.h" role="src" />
-   <file name="php_binpack.c" role="src" />
-   <file name="bin_pack_debug.h" role="src" />
-   <file name="bin_pack_def.h" role="src" />
-   <file name="bin_pack_endian.h" role="src" />
-  </dir>
- </contents>
- <dependencies>
-  <required>
-   <php>
-    <min>5.2.0</min>
-   </php>
-   <pearinstaller>
-    <min>1.4.0</min>
-   </pearinstaller>
-  </required>
- </dependencies>
- <providesextension>binpack</providesextension>
- <extsrcrelease />
- <changelog>
-  <release>
-   <date>2014-07-25</date>
-   <version>
-    <release>1.0.0</release>
-    <api>1.0.0</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>
-- first release
-   </notes>
-  </release>
- </changelog>
+    <name>binpack</name>
+    <channel>pecl.php.net</channel>
+    <summary>binpack for PHP.</summary>
+    <description>The php implementation for BINPACK.</description>
+    <lead>
+        <name>Huqiu Liao</name>
+        <user>srain</user>
+        <email>srain@php.net</email>
+        <active>yes</active>
+    </lead>
+    <date>2014-07-26</date>
+    <time>14:25:16</time>
+    <version>
+        <release>1.0.1</release>
+        <api>1.0.0</api>
+    </version>
+    <stability>
+        <release>stable</release>
+        <api>stable</api>
+    </stability>
+    <license uri="http://www.php.net/license">PHP</license>
+    <notes>
+        - add version info
+        - fix bug: array index which is lower than 0 will not encode correctly in i386
+        - fix bug: value of integer greater than LONG_MAX using BIN_LOG_MAX instead of LONG_MAX
+    </notes>
+    <contents>
+        <dir name="/">
+            <file name="tests/001.phpt" role="test" />
+            <file name="tests/test-bool.phpt" role="test" />
+            <file name="tests/test-array-map.phpt" role="test" />
+            <file name="tests/test-array-list.phpt" role="test" />
+            <file name="tests/test-null.phpt" role="test" />
+            <file name="tests/test-double.phpt" role="test" />
+            <file name="tests/test-array-mix.phpt" role="test" />
+            <file name="tests/test-blob.phpt" role="test" />
+            <file name="tests/test-array-ref.phpt" role="test" />
+            <file name="tests/test-integer.phpt" role="test" />
+            <file name="tests/test-string.phpt" role="test" />
+            <file name="bench/bench.php" role="test" />
+            <file name="README.md" role="doc" />
+            <file name="LICENSE" role="doc" />
+            <file name="CREDITS" role="doc" />
+            <file name="config.m4" role="src" />
+            <file name="config.w32" role="src" />
+            <file name="bin_pack.c" role="src" />
+            <file name="bin_pack.h" role="src" />
+            <file name="php_binpack.h" role="src" />
+            <file name="php_binpack.c" role="src" />
+            <file name="bin_pack_debug.h" role="src" />
+            <file name="bin_pack_def.h" role="src" />
+            <file name="bin_pack_endian.h" role="src" />
+        </dir>
+    </contents>
+    <dependencies>
+        <required>
+            <php>
+                <min>5.2.0</min>
+            </php>
+            <pearinstaller>
+                <min>1.4.0</min>
+            </pearinstaller>
+        </required>
+    </dependencies>
+    <providesextension>binpack</providesextension>
+    <extsrcrelease />
+    <changelog>
+        <release>
+            <date>2014-08-05</date>
+            <version>
+                <release>1.0.1</release>
+                <api>1.0.0</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <notes>
+                - add version info
+                - fix bug: array index which is lower than 0 will not encode correctly in i386
+                - fix bug: value of integer greater than LONG_MAX using BIN_LOG_MAX instead of LONG_MAX
+            </notes>
+        </release>
+        <release>
+            <date>2014-07-25</date>
+            <version>
+                <release>1.0.0</release>
+                <api>1.0.0</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                - first release
+            </notes>
+        </release>
+    </changelog>
 </package>
