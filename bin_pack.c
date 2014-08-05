@@ -240,7 +240,7 @@ static BINPACK_INLINE int do_unpack_int(bin_unpacker_t *packer, intmax_t *p_valu
     return 0;
 }
 
-static BINPACK_INLINE int do_unpack_unit(bin_unpacker_t *packer, intmax_t *p_value)
+static BINPACK_INLINE int do_unpack_unit(bin_unpacker_t *packer, uintmax_t *p_value)
 {
     uintmax_t num;
 
