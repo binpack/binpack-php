@@ -35,10 +35,9 @@
     #define BIN_LONG_MAX 0x7FFFFFFFUL
     #define BIN_LONG_MIN 0x80000000UL
 #else
-    #define bin_long_max 0x7fffffffffffffffUL
-    #define bin_long_min 0x8000000000000000UL
+    #define BIN_LONG_MAX 0X7FFFFFFFFFFFFFFFUL
+    #define BIN_LONG_MIN 0X8000000000000000UL
 #endif
-
 
 /*
  * Use inlined functions for supported systems.

@@ -29,7 +29,7 @@
 #include "ext/standard/info.h"
 #include "ext/standard/php_smart_str.h"			/* for smart_str */
 
-#include "php_binpack.h"			
+#include "php_binpack.h"
 #include "bin_pack.h"
 
 #include <stdio.h>
