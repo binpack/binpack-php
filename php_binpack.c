@@ -259,7 +259,7 @@ static void binpack_encode_array(bin_packer_t *pk, zval *arr TSRMLS_DC)
 
 	if (num > 0)
 	{
-		long idx;
+		ulong idx;
 		char *key;
 		uint key_len;
 		HashPosition pos;
