@@ -245,7 +245,7 @@ static BINPACK_INLINE int do_unpack_unit(bin_unpacker_t *packer, uintmax_t *p_va
 {
     uintmax_t num;
 
-    int type = bin_unpack_type(packer, (uintmax_t*)p_value);
+    int type = bin_unpack_type(packer, &num);
     int sign = type & BIN_MASK_INTEGER_SIGN;
 
     if (type < BIN_TYPE_INTEGER || sign)
