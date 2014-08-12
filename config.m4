@@ -57,6 +57,7 @@ if test "$PHP_BINPACK" != "no"; then
   dnl
   dnl PHP_SUBST(BINPACK_SHARED_LIBADD)
 
+  AC_CHECK_HEADERS([arpa/inet.h])
   PHP_NEW_EXTENSION(binpack, bin_pack.c php_binpack.c, $ext_shared)
 
   ifdef([PHP_INSTALL_HEADERS],

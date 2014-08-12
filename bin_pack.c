@@ -14,18 +14,23 @@
   +----------------------------------------------------------------------+
 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <stdlib.h>
-#include <stdint.h>         
+#include <stdint.h>
 #include <limits.h>
 #include <assert.h>
 #include <string.h>
 #include <stdarg.h>
+#ifdef HAVE_ARPA_INET_H
+#include <arpa/inet.h>
+#endif
 
 #include "bin_pack.h"
 #include "bin_pack_endian.h"
 
 #include <stdio.h>
-#include <arpa/inet.h>
 
 #ifdef CUBE_LIB_RCSID
 static const char rcsid[] = "$Id: bin_pack.c, huqiu Exp $";
