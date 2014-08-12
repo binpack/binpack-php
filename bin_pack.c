@@ -37,19 +37,6 @@ static const char rcsid[] = "$Id: bin_pack.c, huqiu Exp $";
 #define SSIZE_MAX	(SIZE_MAX/2)
 #endif
 
-static const char *binpack_tpnames[] = {
-    "UNKNOWN",	/*  0 */
-    "CLOSURE",	/*  1 */
-    "LIST",		/*  2 */
-    "DICT",		/*  3 */
-    "BOOL",		/*  4 */
-    "DOUBLE",	/*  5 */
-    "FLOAT",	/*  5 */
-    "NULL",		/*  7 */
-    "STRING",	/*  8 */
-    "DOUBLE",	/*  9 */
-    "INTEGER",	/* 10 */
-};
 
 static BINPACK_INLINE size_t do_pack_intstr(char *buf, int type, uintmax_t num)
 {
