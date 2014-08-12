@@ -241,11 +241,11 @@ static BINPACK_INLINE int do_unpack_int(bin_unpacker_t *packer, intmax_t *p_valu
     return 0;
 }
 
-static BINPACK_INLINE int do_unpack_unit(bin_unpacker_t *packer, intmax_t *p_value)
+static BINPACK_INLINE int do_unpack_unit(bin_unpacker_t *packer, uintmax_t *p_value)
 {
     uintmax_t num;
 
-    int type = bin_unpack_type(packer, (uintmax_t*)p_value);
+    int type = bin_unpack_type(packer, &num);
     int sign = type & BIN_MASK_INTEGER_SIGN;
 
     if (type < BIN_TYPE_INTEGER || sign)
