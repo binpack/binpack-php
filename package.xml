@@ -24,7 +24,7 @@
     <notes>
         - add version info
         - fix bug: array index which is lower than 0 will not encode correctly in i386
-        - fix bug: value of integer greater than LONG_MAX using BIN_LOG_MAX instead of LONG_MAX
+        - fix bug: value of integer greater than LONG_MAX using BIN_LONG_MAX instead of LONG_MAX
     </notes>
     <contents>
         <dir name="/">
