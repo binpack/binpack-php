@@ -25,6 +25,7 @@
 #include "bin_pack_endian.h"
 
 #include <stdio.h>
+#include <arpa/inet.h>
 
 #ifdef CUBE_LIB_RCSID
 static const char rcsid[] = "$Id: bin_pack.c, huqiu Exp $";
