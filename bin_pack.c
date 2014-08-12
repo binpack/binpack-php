@@ -23,10 +23,6 @@
 #include <assert.h>
 #include <string.h>
 #include <stdarg.h>
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
-
 #include "bin_pack.h"
 #include "bin_pack_endian.h"
 

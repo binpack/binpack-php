@@ -55,16 +55,35 @@ typedef unsigned __int64 uint64_t;
 
 #ifdef __cplusplus
 /* numeric_limits<T>::min,max */
-#ifdef max
-#undef max
-#endif
-#ifdef min
-#undef min
-#endif
+ #ifdef max
+ #undef max
+ #endif
+
+ #ifdef min
+ #undef min
+ #endif
 #endif
 
 #else
-#include <arpa/inet.h>
+ #ifdef HAVE_ARPA_INET_H
+  #include <arpa/inet.h>
+ #else
+  #if defined(OS_MACOSX) || defined(__APPLE__)
+    #include <machine/endian.h>
+  #elif defined(OS_SOLARIS)
+    #include <sys/isa_defs.h>
+    #ifdef _LITTLE_ENDIAN
+      #define LITTLE_ENDIAN
+    #else
+      #define BIG_ENDIAN
+    #endif
+  #elif defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLYBSD)
+    #include <sys/types.h>
+    #include <sys/endian.h>
+  #else
+    #include <endian.h>
+  #endif
+ #endif
 #endif
 
 #if __BYTE_ORDER == __LITTLE_ENDIAN
