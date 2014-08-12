@@ -25,6 +25,7 @@
 #include "bin_pack_endian.h"
 
 #include <stdio.h>
+#include <arpa/inet.h>
 
 #ifdef CUBE_LIB_RCSID
 static const char rcsid[] = "$Id: bin_pack.c, huqiu Exp $";
@@ -36,19 +37,6 @@ static const char rcsid[] = "$Id: bin_pack.c, huqiu Exp $";
 #define SSIZE_MAX	(SIZE_MAX/2)
 #endif
 
-static const char *binpack_tpnames[] = {
-    "UNKNOWN",	/*  0 */
-    "CLOSURE",	/*  1 */
-    "LIST",		/*  2 */
-    "DICT",		/*  3 */
-    "BOOL",		/*  4 */
-    "DOUBLE",	/*  5 */
-    "FLOAT",	/*  5 */
-    "NULL",		/*  7 */
-    "STRING",	/*  8 */
-    "DOUBLE",	/*  9 */
-    "INTEGER",	/* 10 */
-};
 
 static BINPACK_INLINE size_t do_pack_intstr(char *buf, int type, uintmax_t num)
 {
@@ -95,7 +83,7 @@ static BINPACK_INLINE size_t do_pack_tag(char *buf, int type, uintmax_t num)
 BINPACK_INLINE size_t bin_int_buffer(char *buf, intmax_t value)
 {
     return value >= 0 ? do_pack_intstr(buf, BIN_TYPE_INTEGER, value)
-        : do_pack_intstr(buf, BIN_TYPE_INTEGER_NEGATIVE, -value);
+        : do_pack_intstr(buf, BIN_TYPE_INTEGER_NEGATIVE, -(uintmax_t)value);
 }
 
 BINPACK_INLINE size_t bin_uint_buffer(char *buf, uintmax_t value)
@@ -240,11 +228,11 @@ static BINPACK_INLINE int do_unpack_int(bin_unpacker_t *packer, intmax_t *p_valu
     return 0;
 }
 
-static BINPACK_INLINE int do_unpack_unit(bin_unpacker_t *packer, intmax_t *p_value)
+static BINPACK_INLINE int do_unpack_unit(bin_unpacker_t *packer, uintmax_t *p_value)
 {
     uintmax_t num;
 
-    int type = bin_unpack_type(packer, (uintmax_t*)p_value);
+    int type = bin_unpack_type(packer, &num);
     int sign = type & BIN_MASK_INTEGER_SIGN;
 
     if (type < BIN_TYPE_INTEGER || sign)
