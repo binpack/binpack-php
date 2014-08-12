@@ -296,7 +296,7 @@ static void binpack_encode_array(bin_packer_t *pk, zval *arr TSRMLS_DC)
 				}
 				else
 				{
-					bin_pack_integer(pk, idx);
+					bin_pack_integer(pk, (long)idx);
 				}
 			}
 

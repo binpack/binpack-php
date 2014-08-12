@@ -49,6 +49,7 @@ typedef unsigned __int64 uint64_t;
 #include <stdint.h>
 #endif
 
+/* __BYTE_ORDER */
 #ifdef _WIN32
 #include <winsock2.h>
 
@@ -63,23 +64,8 @@ typedef unsigned __int64 uint64_t;
 #endif
 
 #else
-#if defined(OS_MACOSX) || defined(__APPLE__)
-  #include <machine/endian.h>
-#elif defined(OS_SOLARIS)
-  #include <sys/isa_defs.h>
-  #ifdef _LITTLE_ENDIAN
-    #define LITTLE_ENDIAN
-  #else
-    #define BIG_ENDIAN
-  #endif
-#elif defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLYBSD)
-  #include <sys/types.h>
-  #include <sys/endian.h>
-#else
-  #include <endian.h>
+#include <arpa/inet.h>
 #endif
-#endif
-
 
 #if __BYTE_ORDER == __LITTLE_ENDIAN
 
