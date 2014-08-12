@@ -76,7 +76,7 @@ zend_module_entry binpack_module_entry = {
 	NULL,		/* Replace with NULL if there's nothing to do at request end */
 	PHP_MINFO(binpack),
 #if ZEND_MODULE_API_NO >= 20010901
-	"0.1", /* Replace with version number for your extension */
+	BINPACK_EXTENSION_VERSION, /* Replace with version number for your extension */
 #endif
 	STANDARD_MODULE_PROPERTIES
 };
