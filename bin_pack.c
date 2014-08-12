@@ -95,7 +95,7 @@ static BINPACK_INLINE size_t do_pack_tag(char *buf, int type, uintmax_t num)
 BINPACK_INLINE size_t bin_int_buffer(char *buf, intmax_t value)
 {
     return value >= 0 ? do_pack_intstr(buf, BIN_TYPE_INTEGER, value)
-        : do_pack_intstr(buf, BIN_TYPE_INTEGER_NEGATIVE, -value);
+        : do_pack_intstr(buf, BIN_TYPE_INTEGER_NEGATIVE, -(uintmax_t)value);
 }
 
 BINPACK_INLINE size_t bin_uint_buffer(char *buf, uintmax_t value)
